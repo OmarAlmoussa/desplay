@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOON BARBERSHOP - Display</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            overflow: hidden;
+            background: #000;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .display-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460, #5a9f9f, #4dd0e1);
+            background-size: 500% 500%;
+            animation: epicGradientShift 20s ease infinite;
+        }
+
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(100px) rotateX(15deg);
+            transition: all 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            padding: 40px;
+        }
+
+        .screen.active {
+            opacity: 1;
+            transform: translateY(0) rotateX(0deg);
+        }
+
+
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            color: white;
+        }
+
+        .logo-container {
+            margin-bottom: 60px;
+            position: relative;
+            animation: logoEntrance 3s ease;
+        }
+
+        .logo {
+            font-size: 8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #4dd0e1, #80deea, #e0f7fa, #4dd0e1);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 50px rgba(77, 208, 225, 0.8);
+            animation: epicGlow 4s ease-in-out infinite alternate, logoShake 0.5s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        .logo::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: epicGradientShift 3s ease infinite;
+            opacity: 0.7;
+            z-index: -1;
+            filter: blur(2px);
+        }
+
+        .subtitle {
+            font-size: 3.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            animation: bounceInUp 2s ease, textWave 4s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-size: 2.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            animation: fadeInUp 2s ease 0.5s both, textFloat 5s ease-in-out infinite;
+            font-weight: 500;
+        }
+
+        /* Services Screen */
+        .services-screen {
+            color: white;
+            text-align: center;
+        }
+
+        .services-title {
+            font-size: 5.5rem;
+            font-weight: 900;
+            margin-bottom: 80px;
+            background: linear-gradient(135deg, #4dd0e1, #80deea, #ff6b6b, #4dd0e1);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: epicGradientShift 4s ease infinite, titlePulse 2s ease-in-out infinite;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 35px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .service-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            border: 3px solid rgba(77, 208, 225, 0.4);
+            border-radius: 25px;
+            padding: 45px;
+            transform: translateX(-200px) rotateY(-15deg);
+            opacity: 0;
+            animation: epicSlideIn 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: megaShine 4s infinite;
+            transform: rotate(45deg);
+        }
+
+        .service-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4dd0e1, #80deea, #ff6b6b, #4dd0e1);
+            background-size: 400% 400%;
+            animation: epicGradientShift 3s ease infinite;
+        }
+
+        .service-item:nth-child(1) { animation-delay: 0.2s; }
+        .service-item:nth-child(2) { animation-delay: 0.5s; }
+        .service-item:nth-child(3) { animation-delay: 0.8s; }
+        .service-item:nth-child(4) { animation-delay: 1.1s; }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .service-name {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #4dd0e1;
+            animation: textPulse 3s ease-in-out infinite;
+        }
+
+        .service-price {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #80deea, #4dd0e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(128, 222, 234, 0.8);
+            animation: priceGlow 2s ease-in-out infinite alternate;
+        }
+
+        .service-description {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            animation: textWave 4s ease-in-out infinite;
+        }
+
+        /* Packages Screen */
+        .packages-screen {
+            color: white;
+            text-align: center;
+        }
+
+        .packages-title {
+            font-size: 5.5rem;
+            font-weight: 900;
+            margin-bottom: 80px;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24, #ff6b6b, #f59e0b);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: epicGradientShift 4s ease infinite, titleBounce 2s ease-in-out infinite;
+        }
+
+        .package-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 50px;
+            max-width: 950px;
+            width: 100%;
+        }
+
+        .package-item {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(251, 191, 36, 0.2));
+            backdrop-filter: blur(25px);
+            border: 4px solid rgba(245, 158, 11, 0.6);
+            border-radius: 30px;
+            padding: 55px;
+            position: relative;
+            transform: scale(0.7) rotateX(20deg);
+            opacity: 0;
+            animation: epicZoomIn 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            overflow: hidden;
+        }
+
+        .package-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: superShine 5s infinite;
+        }
+
+        .package-item:nth-child(1) { animation-delay: 0.3s; }
+        .package-item:nth-child(2) { animation-delay: 0.7s; }
+        .package-item:nth-child(3) { animation-delay: 1.1s; }
+
+        .package-badge {
+            position: absolute;
+            top: -20px;
+            right: 40px;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
+            animation: badgeBounce 3s ease-in-out infinite;
+        }
+
+        .package-name {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #fbbf24;
+            margin-bottom: 25px;
+            animation: nameGlow 3s ease-in-out infinite alternate;
+        }
+
+        .package-price {
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            animation: priceShake 4s ease-in-out infinite;
+        }
+
+        .package-old-price {
+            font-size: 2.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: line-through;
+            margin-bottom: 25px;
+            animation: oldPriceFade 3s ease-in-out infinite;
+        }
+
+        .package-features {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
+            animation: featuresFloat 5s ease-in-out infinite;
+        }
+
+        /* Contact Screen */
+        .contact-screen {
+            color: white;
+            text-align: center;
+        }
+
+        .contact-title {
+            font-size: 5.5rem;
+            font-weight: 900;
+            margin-bottom: 80px;
+            background: linear-gradient(135deg, #10b981, #34d399, #4dd0e1, #10b981);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: epicGradientShift 4s ease infinite, titleWobble 3s ease-in-out infinite;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .contact-item {
+            background: rgba(16, 185, 129, 0.15);
+            backdrop-filter: blur(25px);
+            border: 3px solid rgba(16, 185, 129, 0.4);
+            border-radius: 25px;
+            padding: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            font-size: 2.8rem;
+            transform: translateY(50px) rotateX(15deg);
+            opacity: 0;
+            animation: contactSlideIn 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.3), transparent);
+            animation: contactShine 4s infinite;
+        }
+
+        .contact-item:nth-child(1) { animation-delay: 0.3s; }
+        .contact-item:nth-child(2) { animation-delay: 0.6s; }
+        .contact-item:nth-child(3) { animation-delay: 0.9s; }
+
+        .contact-icon {
+            font-size: 3.5rem;
+            color: #34d399;
+            animation: iconSpin 4s linear infinite;
+        }
+
+        /* Enhanced Floating Elements */
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            animation: megaFloat 12s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 250px;
+            height: 250px;
+            top: 5%;
+            left: 5%;
+            animation-delay: 0s;
+            background: linear-gradient(45deg, rgba(77, 208, 225, 0.2), rgba(255, 107, 107, 0.1));
+        }
+
+        .shape-2 {
+            width: 180px;
+            height: 180px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 3s;
+            background: linear-gradient(45deg, rgba(251, 191, 36, 0.2), rgba(77, 208, 225, 0.1));
+        }
+
+        .shape-3 {
+            width: 120px;
+            height: 120px;
+            top: 30%;
+            left: 85%;
+            animation-delay: 6s;
+            background: linear-gradient(45deg, rgba(16, 185, 129, 0.2), rgba(255, 107, 107, 0.1));
+        }
+
+        .shape-4 {
+            width: 200px;
+            height: 200px;
+            top: 80%;
+            left: 40%;
+            animation-delay: 9s;
+            background: linear-gradient(45deg, rgba(255, 107, 107, 0.2), rgba(251, 191, 36, 0.1));
+        }
+
+        /* Mega Particles System */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(77, 208, 225, 0.8);
+            animation: megaParticleFloat 8s linear infinite;
+        }
+
+        .particle.type-2 {
+            background: rgba(251, 191, 36, 0.8);
+            animation-duration: 10s;
+        }
+
+        .particle.type-3 {
+            background: rgba(255, 107, 107, 0.8);
+            animation-duration: 12s;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(77, 208, 225, 0.3);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4dd0e1, #80deea, #ff6b6b, #fbbf24);
+            background-size: 400% 400%;
+            border-radius: 4px;
+            animation: progressFill 20s linear infinite, epicGradientShift 3s ease infinite;
+            box-shadow: 0 0 15px rgba(77, 208, 225, 0.5);
+        }
+
+        /* Epic Animations */
+        @keyframes epicGradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+
+
+        @keyframes epicGlow {
+            from { text-shadow: 0 0 50px rgba(77, 208, 225, 0.8); }
+            to { text-shadow: 0 0 80px rgba(77, 208, 225, 1), 0 0 120px rgba(255, 107, 107, 0.5); }
+        }
+
+        @keyframes logoShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(0.5deg); }
+            75% { transform: rotate(-0.5deg); }
+        }
+
+        @keyframes logoEntrance {
+            0% { transform: scale(0.5) rotateY(180deg); opacity: 0; }
+            50% { transform: scale(1.2) rotateY(90deg); opacity: 0.5; }
+            100% { transform: scale(1) rotateY(0deg); opacity: 1; }
+        }
+
+        @keyframes bounceInUp {
+            0% { transform: translateY(100px) scale(0.8); opacity: 0; }
+            60% { transform: translateY(-20px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes textWave {
+            0%, 100% { transform: translateY(0px); }
+            25% { transform: translateY(-5px); }
+            75% { transform: translateY(5px); }
+        }
+
+        @keyframes textFloat {
+            0%, 100% { transform: translateY(0px) rotateX(0deg); }
+            50% { transform: translateY(-10px) rotateX(5deg); }
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes epicSlideIn {
+            0% { transform: translateX(-200px) rotateY(-15deg) scale(0.8); opacity: 0; }
+            70% { transform: translateX(20px) rotateY(5deg) scale(1.05); opacity: 1; }
+            100% { transform: translateX(0) rotateY(0deg) scale(1); opacity: 1; }
+        }
+
+        @keyframes megaShine {
+            0% { transform: translateX(-200%) rotate(45deg); }
+            100% { transform: translateX(200%) rotate(45deg); }
+        }
+
+        @keyframes textPulse {
+            0%, 100% { transform: scale(1); color: #4dd0e1; }
+            50% { transform: scale(1.03); color: #80deea; }
+        }
+
+        @keyframes priceGlow {
+            from { filter: brightness(1) saturate(1); }
+            to { filter: brightness(1.2) saturate(1.3); }
+        }
+
+        @keyframes titleBounce {
+            0%, 100% { transform: translateY(0px) rotateX(0deg); }
+            50% { transform: translateY(-8px) rotateX(2deg); }
+        }
+
+        @keyframes epicZoomIn {
+            0% { transform: scale(0.7) rotateX(20deg) rotateY(20deg); opacity: 0; }
+            60% { transform: scale(1.1) rotateX(-5deg) rotateY(-5deg); opacity: 1; }
+            100% { transform: scale(1) rotateX(0deg) rotateY(0deg); opacity: 1; }
+        }
+
+        @keyframes superShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes badgeBounce {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        @keyframes nameGlow {
+            from { text-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+            to { text-shadow: 0 0 40px rgba(251, 191, 36, 0.8), 0 0 60px rgba(255, 107, 107, 0.3); }
+        }
+
+        @keyframes priceShake {
+            0%, 100% { transform: translateX(0px); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        @keyframes oldPriceFade {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes featuresFloat {
+            0%, 100% { transform: translateY(0px); }
+            33% { transform: translateY(-3px); }
+            66% { transform: translateY(3px); }
+        }
+
+        @keyframes titleWobble {
+            0%, 100% { transform: rotateZ(0deg); }
+            25% { transform: rotateZ(1deg); }
+            75% { transform: rotateZ(-1deg); }
+        }
+
+        @keyframes contactSlideIn {
+            0% { transform: translateY(50px) rotateX(15deg) scale(0.9); opacity: 0; }
+            70% { transform: translateY(-10px) rotateX(-5deg) scale(1.03); opacity: 1; }
+            100% { transform: translateY(0px) rotateX(0deg) scale(1); opacity: 1; }
+        }
+
+        @keyframes contactShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.1); }
+            50% { transform: rotate(180deg) scale(1); }
+            75% { transform: rotate(270deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes megaFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            25% { transform: translateY(-30px) rotate(90deg) scale(1.1); }
+            50% { transform: translateY(-60px) rotate(180deg) scale(0.9); }
+            75% { transform: translateY(-30px) rotate(270deg) scale(1.1); }
+        }
+
+        @keyframes megaParticleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes progressFill {
+            0% { width: 0%; }
+            25% { width: 25%; }
+            50% { width: 50%; }
+            75% { width: 75%; }
+            100% { width: 100%; }
+        }
+
+        /* Icon styles using CSS */
+        .icon-phone::before { content: '📞'; }
+        .icon-location::before { content: '📍'; }
+        .icon-clock::before { content: '🕒'; }
+        .icon-cut::before { content: '✂️'; }
+        .icon-crown::before { content: '👑'; }
+        .icon-star::before { content: '⭐'; }
+
+        /* Responsive adjustments */
+        @media (orientation: portrait) {
+            .logo { font-size: 6.5rem; }
+            .subtitle { font-size: 3rem; }
+            .tagline { font-size: 2rem; }
+            .services-title, .packages-title, .contact-title { font-size: 4.5rem; }
+            .service-name { font-size: 2.3rem; }
+            .service-price { font-size: 3rem; }
+            .service-description { font-size: 1.7rem; }
+            .package-name { font-size: 2.8rem; }
+            .package-price { font-size: 4rem; }
+            .contact-item { font-size: 2.3rem; }
+            .qr-container { bottom: 30px; right: 30px; }
+            .qr-code { width: 150px; height: 150px; }
+            .qr-text { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="display-container">
+
+
+        <!-- Enhanced Floating Elements -->
+        <div class="floating-elements">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+            <div class="floating-shape shape-4"></div>
+        </div>
+
+        <!-- Mega Particles -->
+        <div class="particles" id="particles"></div>
+
+        <!-- Welcome Screen -->
+        <div class="screen welcome-screen active" id="screen-0">
+            <div class="logo-container">
+                <div class="logo" data-text="MOON">MOON</div>
+                <div class="logo" data-text="BARBERSHOP">BARBERSHOP</div>
+            </div>
+            <div class="subtitle">Profesjonell Barbering</div>
+            <div class="tagline">Kvalitet • Stil • Service</div>
+        </div>
+
+        <!-- Services Screen 1 -->
+        <div class="screen services-screen" id="screen-1">
+            <div class="services-title">Våre Tjenester</div>
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-header">
+                        <div class="service-name">Herreklipp</div>
+                        <div class="service-price">399,-</div>
+                    </div>
+                    <div class="service-description">Profesjonell klipp tilpasset din stil</div>
+                </div>
+                <div class="service-item">
+                    <div class="service-header">
+                        <div class="service-name">Skjeggtrim</div>
+                        <div class="service-price">299,-</div>
+                    </div>
+                    <div class="service-description">Presist trimming og forming</div>
+                </div>
+                <div class="service-item">
+                    <div class="service-header">
+                        <div class="service-name">Ungdom Klipp</div>
+                        <div class="service-price">349,-</div>
+                    </div>
+                    <div class="service-description">For unge menn under 18 år</div>
+                </div>
+                <div class="service-item">
+                    <div class="service-header">
+                        <div class="service-name">Barneklipp</div>
+                        <div class="service-price">299,-</div>
+                    </div>
+                    <div class="service-description">Profesjonell klipp for barn</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Packages Screen -->
+        <div class="screen packages-screen" id="screen-2">
+            <div class="packages-title">Spesial Tilbud</div>
+            <div class="package-grid">
+                <div class="package-item">
+                    <div class="package-badge">Mest Populær</div>
+                    <div class="package-name">Herreklipp + Skjegg</div>
+                    <div class="package-price">649,-</div>
+                    <div class="package-old-price">698,-</div>
+                    <div class="package-features">Herreklipp + Skjeggtrim<br>Styling og finish<br>Spar 49 kroner</div>
+                </div>
+                <div class="package-item">
+                    <div class="package-badge">VIP</div>
+                    <div class="package-name">Premium Pakke</div>
+                    <div class="package-price">799,-</div>
+                    <div class="package-old-price">848,-</div>
+                    <div class="package-features">Premium ansiktsbehandling<br>Styling med kvalitetsprodukter<br>Spar 49 kroner</div>
+                </div>
+                <div class="package-item">
+                    <div class="package-name">VIP Behandling</div>
+                    <div class="package-price">999,-</div>
+                    <div class="package-old-price">1147,-</div>
+                    <div class="package-features">Klipp + Skjegg + Voks + Varmt håndkle<br>Ansiktsmaske + Kaffe/te<br>Spar 148 kroner</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Screen -->
+        <div class="screen contact-screen" id="screen-3">
+            <div class="contact-title">Bestill Din Time</div>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon icon-phone"></div>
+                    <div>+47 463 360 65</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon icon-location"></div>
+                    <div>Besøk oss i sentrum</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon icon-clock"></div>
+                    <div>Åpent daglig 09:00 - 21:00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentScreen = 0;
+        const screens = document.querySelectorAll('.screen');
+        const totalScreens = screens.length;
+        const screenDuration = 5000; // 5 seconds per screen
+
+        // Create mega particles system
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random particle types
+                const types = ['', 'type-2', 'type-3'];
+                const randomType = types[Math.floor(Math.random() * types.length)];
+                if (randomType) particle.classList.add(randomType);
+                
+                // Random size
+                const size = Math.random() * 6 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                // Random position
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Switch screens with enhanced effects
+        function switchScreen() {
+            // Add exit animation to current screen
+            screens[currentScreen].style.transform = 'translateY(-100px) rotateX(-15deg) scale(0.95)';
+            screens[currentScreen].style.opacity = '0';
+            
+            setTimeout(() => {
+                screens[currentScreen].classList.remove('active');
+                currentScreen = (currentScreen + 1) % totalScreens;
+                
+                // Reset and show next screen
+                screens[currentScreen].style.transform = 'translateY(100px) rotateX(15deg) scale(1.05)';
+                screens[currentScreen].style.opacity = '0';
+                screens[currentScreen].classList.add('active');
+                
+                // Animate in
+                setTimeout(() => {
+                    screens[currentScreen].style.transform = 'translateY(0) rotateX(0deg) scale(1)';
+                    screens[currentScreen].style.opacity = '1';
+                }, 100);
+            }, 500);
+        }
+
+        // Enhanced interaction effects
+        function addInteractiveEffects() {
+            // Service items hover effects
+            const serviceItems = document.querySelectorAll('.service-item');
+            serviceItems.forEach((item, index) => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-15px) scale(1.05) rotateY(5deg)';
+                    this.style.boxShadow = '0 40px 80px rgba(77, 208, 225, 0.4)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1) rotateY(0deg)';
+                    this.style.boxShadow = '';
+                });
+            });
+
+            // Package items effects
+            const packageItems = document.querySelectorAll('.package-item');
+            packageItems.forEach((item, index) => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.08) rotateY(8deg)';
+                    this.style.boxShadow = '0 50px 100px rgba(245, 158, 11, 0.4)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1) rotateY(0deg)';
+                    this.style.boxShadow = '';
+                });
+            });
+        }
+
+        // Background animation controller
+        function enhanceBackgroundEffects() {
+            const container = document.querySelector('.display-container');
+            
+            // Add random color shifts
+            setInterval(() => {
+                const colors = [
+                    'linear-gradient(45deg, #1a1a2e, #16213e, #0f3460, #5a9f9f, #4dd0e1)',
+                    'linear-gradient(45deg, #2d1b69, #11998e, #38ef7d, #4dd0e1, #ff6b6b)',
+                    'linear-gradient(45deg, #fc466b, #3f5efb, #4dd0e1, #feca57, #ff9ff3)',
+                    'linear-gradient(45deg, #667eea, #764ba2, #4dd0e1, #f093fb, #f5576c)'
+                ];
+                
+                const randomGradient = colors[Math.floor(Math.random() * colors.length)];
+                container.style.background = randomGradient;
+                container.style.backgroundSize = '500% 500%';
+            }, 20000); // Change every 20 seconds
+        }
+
+        // Initialize everything
+        function init() {
+            createParticles();
+            addInteractiveEffects();
+            enhanceBackgroundEffects();
+            
+            // Start the slideshow
+            setInterval(switchScreen, screenDuration);
+            
+            // Auto-refresh every 2 hours to prevent memory leaks
+            setTimeout(() => {
+                location.reload();
+            }, 7200000); // 2 hours
+        }
+
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Add some screen-specific effects
+        setTimeout(() => {
+            // Add staggered animations to service items
+            const serviceItems = document.querySelectorAll('.service-item');
+            serviceItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.animation += ', pulse 3s ease-in-out infinite';
+                }, index * 300);
+            });
+        }, 2000);
+    </script>
+</body>
+</html>
